@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './CourseBox.css'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 function CourseBox() {
+    const [isShowImg, setIsShowImg] = useState(false)
+
     return (
         <div className="col-4">
             <div className="course-box">
                 <a href="#">
-                    <img src="images/courses/fareelancer.png" alt="Course img" className="course-box__img" />
+                    {!isShowImg && (
+                        <Skeleton
+                            className="course-box__loader"
+                        />
+                    )}
+                    <img src="/images/courses/fareelancer.png" alt="Course img" className="course-box__img" onLoad={() => setIsShowImg(true)} />
                 </a>
                 <div className="course-box__main">
                     <a href="#" className="course-box__title">دوره پروژه محور متخصص جنگو</a>
@@ -17,11 +26,11 @@ function CourseBox() {
                             <a href="#" className="course-box__teacher-link">رضا دولتی</a>
                         </div>
                         <div className="course-box__rating">
-                            <img src="images/svgs/star.svg" alt="rating" className="course-box__star" />
-                            <img src="images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
-                            <img src="images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
-                            <img src="images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
-                            <img src="images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
+                            <img src="/images/svgs/star.svg" alt="rating" className="course-box__star" />
+                            <img src="/images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
+                            <img src="/images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
+                            <img src="/images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
+                            <img src="/images/svgs/star_fill.svg" alt="rating" className="course-box__star" />
                         </div>
                     </div>
 
