@@ -1,0 +1,7 @@
+.success {
+    border: solid 2px var(--primary-color);
+}
+
+.error {
+    border: solid 2px rgb(204, 8, 66);
+}
