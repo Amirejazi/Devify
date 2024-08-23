@@ -17,11 +17,11 @@ function Courses() {
                 ]}
             />
 
-            <section class="courses">
-                <div class="container">
-                    <div class="courses-content">
-                        <div class="container">
-                            <div class="row">
+            <section className="courses">
+                <div className="container">
+                    <div className="courses-content">
+                        <div className="container">
+                            <div className="row">
                                 <CourseBox />
                                 <CourseBox />
                                 <CourseBox />
