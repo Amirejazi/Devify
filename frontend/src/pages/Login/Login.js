@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from 'react-router-dom'
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-
-import "./Login.css";
 import Input from "../../components/Form/Input";
+import {requiredValidator, minValidator, maxValidator, emailValidator} from '../../validators/rules'
+import "./Login.css";
 
 export default function Login() {
     return (
@@ -28,6 +28,11 @@ export default function Login() {
                                 className="login-form__username-input"
                                 type="text"
                                 placeholder="نام کاربری یا آدرس ایمیل"
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(10),
+                                    maxValidator(20),
+                                ]}
                             />
                             <i className="login-form__username-icon fa fa-user"></i>
                         </div>
@@ -36,6 +41,11 @@ export default function Login() {
                                 className="login-form__password-input"
                                 type="text"
                                 placeholder="رمز عبور"
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(8),
+                                    maxValidator(18),
+                                ]}
                             />
                             <i className="login-form__password-icon fa fa-lock-open"></i>
                         </div>
