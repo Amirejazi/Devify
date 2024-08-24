@@ -1,4 +1,5 @@
 import rules from './rules'
+import regex from "./regex";
 
 const validator = (value, validators) => {
     let validationResults = []
@@ -14,7 +15,7 @@ const validator = (value, validators) => {
             value.trim().length > validator.maxLength && validationResults.push(false)
         }
         if (validator.value === rules.emailValue) {
-            !value.trim().include('@') && validationResults.push(false)
+            !regex.testEmail(value.trim()) && validationResults.push(false)
         }
     }
     
