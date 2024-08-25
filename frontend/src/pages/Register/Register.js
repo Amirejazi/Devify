@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { json, Link } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
@@ -7,6 +7,7 @@ import useForm from '../../hooks/useForm'
 import { requiredValidator, minValidator, maxValidator, emailValidator } from '../../validators/rules'
 import "./Register.css";
 import apiRequests from "../../Services/Axios/configs";
+import AuthContext from "../../context/authContext";
 
 export default function Register() {
     const [formState, onInputHandler] = useForm({
@@ -32,6 +33,8 @@ export default function Register() {
         }
     }, false)
 
+    const authContext = useContext(AuthContext);
+
     const registerNewUser = (e) => {
         e.preventDefault()
         const newUser = {
@@ -46,6 +49,7 @@ export default function Register() {
         apiRequests.post('auth/register', newUser)
             .then(res => {
                 console.log(res.data);
+                authContext.login(res.data.accessToken, res.data.user)
             })
 
         // fetch('http://localhost:4000/v1/auth/register', {

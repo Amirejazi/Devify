@@ -9,10 +9,10 @@ const apiRequests = axios.create({
 
 apiRequests.interceptors.request.use(
     (config) => {
-        // const token = localStorage.getItem("authToken");
-        // if (token) {
-        //     config.headers.Authorization = `Bearer ${token}`;
-        // }
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
     },
     (err) => {
@@ -38,6 +38,7 @@ apiRequests.interceptors.response.use(
         } else if (status === 404) {
             // Coding
         } else if (status === 401) {
+            console.log('Error 401: unauthorized!');
             // Navigate to login page
         }
 
