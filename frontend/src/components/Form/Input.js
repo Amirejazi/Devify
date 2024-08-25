@@ -22,7 +22,7 @@ function Input(props) {
 
     const { value, isValid } = mainInput
     const { id } = props
-    
+
     useEffect(() => {
         props.onInputHandler(id, value, isValid)
 
@@ -34,6 +34,12 @@ function Input(props) {
             value: e.target.value,
             validators: props.validators
         })
+        if (statusClass) {
+            if (mainInput.isValid)
+                setStatusClass('success')
+            else
+                setStatusClass('error')
+        }
     }
 
     const onBlurHandler = () => {

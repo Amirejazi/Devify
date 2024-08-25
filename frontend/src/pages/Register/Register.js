@@ -1,12 +1,64 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
-
-import "./Register.css";
 import Header from "../../components/Header/Header";
 import Input from "../../components/Form/Input";
+import useForm from '../../hooks/useForm'
+import { requiredValidator, minValidator, maxValidator, emailValidator } from '../../validators/rules'
+import "./Register.css";
+import apiRequests from "../../Services/Axios/configs";
 
 export default function Register() {
+    const [formState, onInputHandler] = useForm({
+        fullname: {
+            value: '',
+            isValid: false
+        },
+        username: {
+            value: '',
+            isValid: false
+        },
+        phone: {
+            value: '',
+            isValid: false
+        },
+        email: {
+            value: '',
+            isValid: false
+        },
+        password: {
+            value: '',
+            isValid: false
+        }
+    }, false)
+
+    const registerNewUser = (e) => {
+        e.preventDefault()
+        const newUser = {
+            name: formState.inputs.fullname.value,
+            username: formState.inputs.username.value,
+            phone: formState.inputs.phone.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+            confirmPassword: formState.inputs.password.value,
+        }
+
+        apiRequests.post('auth/register', newUser)
+            .then(res => {
+                console.log(res.data);
+            })
+
+        // fetch('http://localhost:4000/v1/auth/register', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(newUser)
+        // })
+        //     .then(res => res.json())
+        //     .then(data => console.log(data))
+    }
+
     return (
         <>
             <Header />
@@ -21,20 +73,65 @@ export default function Register() {
                             وارد شوید
                         </Link>
                     </div>
-                    <form action="#" className="login-form">
+                    <form action="#" className="login-form" onSubmit={registerNewUser}>
+                        <div className="login-form__username">
+                            <Input
+                                className="login-form__username-input"
+                                type="text"
+                                placeholder="نام و نام خانوادگی"
+                                id='fullname'
+                                onInputHandler={onInputHandler}
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(4),
+                                    maxValidator(20),
+                                ]}
+                            />
+                            <i className="login-form__username-icon fa fa-user"></i>
+                        </div>
                         <div className="login-form__username">
                             <Input
                                 className="login-form__username-input"
                                 type="text"
                                 placeholder="نام کاربری"
+                                id='username'
+                                onInputHandler={onInputHandler}
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(4),
+                                    maxValidator(20)
+                                ]}
                             />
-                            <i className="login-form__username-icon fa fa-user"></i>
+                            <i className="login-form__username-icon fa fa-id-card"></i>
+                        </div>
+                        <div className="login-form__username">
+                            <Input
+                                className="login-form__username-input"
+                                type="text"
+                                placeholder="شماره موبایل"
+                                id='phone'
+                                onInputHandler={onInputHandler}
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(4),
+                                    maxValidator(20)
+                                ]}
+                            />
+                            <i className="login-form__username-icon fa fa-phone"></i>
                         </div>
                         <div className="login-form__password">
                             <Input
                                 className="login-form__password-input"
                                 type="text"
                                 placeholder="آدرس ایمیل"
+                                id='email'
+                                onInputHandler={onInputHandler}
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(5),
+                                    maxValidator(20),
+                                    emailValidator()
+                                ]}
                             />
                             <i className="login-form__password-icon fa fa-envelope"></i>
                         </div>
@@ -43,10 +140,17 @@ export default function Register() {
                                 className="login-form__password-input"
                                 type="text"
                                 placeholder="رمز عبور"
+                                id='password'
+                                onInputHandler={onInputHandler}
+                                validators={[
+                                    requiredValidator(),
+                                    minValidator(3),
+                                    maxValidator(20),
+                                ]}
                             />
                             <i className="login-form__password-icon fa fa-lock-open"></i>
                         </div>
-                        <button className="login-form__btn" type="submit">
+                        <button className={`login-form__btn ${formState.isFormValid ? '' : 'btn-disable'}`} type="submit" disabled={!formState.isFormValid}>
                             <i className="login-form__btn-icon fa fa-user-plus"></i>
                             <span className="login-form__btn-text">عضویت</span>
                         </button>
