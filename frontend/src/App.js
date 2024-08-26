@@ -11,11 +11,12 @@ function App() {
 
     const router = useRoutes(routes)
 
-    const login = (token, userInfos) => {
-        setToken(token)
+    const login = (userInfos, accessToken, refreshToken) => {
+        setToken(accessToken)
         setIsLoggedIn(true)
         setUserInfos(userInfos)
-        localStorage.setItem('authToken', token)
+        localStorage.setItem('authToken', accessToken)
+        localStorage.setItem('refreshToken', refreshToken)
     }
 
     const logout = (token) => {
@@ -28,11 +29,14 @@ function App() {
     useEffect(() => {
         const localStorageData = localStorage.getItem('authToken')
         if (localStorageData) {
+            console.log('me');
+            
             apiRequests.get('auth/me')
-            .then(res => {
-                setIsLoggedIn(true)
-                setUserInfos(res.data)               
-            })
+                .then(res => {
+                    setIsLoggedIn(true)
+                    setUserInfos(res.data)
+                })
+                .catch(err => console.log(err))
         }
     }, [])
 

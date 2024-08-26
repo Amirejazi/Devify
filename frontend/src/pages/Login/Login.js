@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from 'react-router-dom'
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
@@ -6,6 +6,10 @@ import Input from "../../components/Form/Input";
 import { requiredValidator, minValidator, maxValidator, emailValidator } from '../../validators/rules'
 import "./Login.css";
 import useForm from "../../hooks/useForm";
+import apiRequests from "../../Services/Axios/configs";
+import AuthContext from "../../context/authContext";
+import toast from 'react-hot-toast';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Login() {
     const [formState, onInputHandler] = useForm({
@@ -18,10 +22,45 @@ export default function Login() {
             isValid: false
         }
     }, false)
+    const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false)
 
+    const authContext = useContext(AuthContext)
 
-    console.log(formState);
-    
+    const loginUser = (e) => {
+        e.preventDefault()
+        const userInfo = {
+            identifier: formState.inputs.username.value,
+            password: formState.inputs.password.value,
+        }
+
+        apiRequests.post('auth/login', userInfo)
+            .then(res => {
+                if (res.statusText !== 'OK') {
+                    throw new Error(res.statusText)
+                }
+                authContext.login(res.data.user, res.data.accessToken, res.data.refreshToken)
+                toast.success('ورود با موفقیت انجام شد :)', {
+                    style: {
+                        borderRadius: '15px',
+                        background: 'linear-gradient(145deg, #88d6f1, #72b4cb)',
+                        color: '#fff',
+                        fontWeight: '600',
+                        zoom: 1.2,
+                        boxShadow: '7px 7px 14px #68a4b9, -7px -7px 14px #96ecff;'
+                    },
+                    iconTheme: {
+                        primary: '#00E676',
+                        secondary: '#fff',
+                    },
+                })
+
+            })
+            .catch(err => {
+                console.log(err.data);
+                toast.error('همچین کاربری وجود ندارد')
+            })
+    }
+
     return (
         <>
             <Header />
@@ -37,7 +76,7 @@ export default function Login() {
                             ثبت نام
                         </Link>
                     </div>
-                    <form action="#" className="login-form">
+                    <form action="#" className="login-form" onSubmit={loginUser}>
                         <div className="login-form__username">
                             <Input
                                 id='username'
@@ -46,7 +85,7 @@ export default function Login() {
                                 placeholder="نام کاربری یا آدرس ایمیل"
                                 validators={[
                                     requiredValidator(),
-                                    minValidator(6),
+                                    minValidator(4),
                                     maxValidator(20),
                                 ]}
                                 onInputHandler={onInputHandler}
@@ -61,14 +100,21 @@ export default function Login() {
                                 placeholder="رمز عبور"
                                 validators={[
                                     requiredValidator(),
-                                    minValidator(8),
+                                    minValidator(3),
                                     maxValidator(18),
                                 ]}
                                 onInputHandler={onInputHandler}
                             />
                             <i className="login-form__password-icon fa fa-lock-open"></i>
                         </div>
-                        <button className={`login-form__btn ${formState.isFormValid ? '': 'btn-disable'}`} type="submit" disabled={!formState.isFormValid}>
+                        <br />
+                        <div className="login-form__password">
+                            <ReCAPTCHA
+                                sitekey='6Lft4y8qAAAAAIfP3O-gzB_n-ka8T8AAj9Oxwk15'
+                                onChange={() => setIsRecaptchaVerified(true)}
+                            />
+                        </div>
+                        <button className={`login-form__btn ${(formState.isFormValid && isRecaptchaVerified) ? '' : 'btn-disable'}`} type="submit" disabled={!formState.isFormValid}>
                             <i className="login-form__btn-icon fas fa-sign-out-alt"></i>
                             <span className="login-form__btn-text">ورود</span>
                         </button>
