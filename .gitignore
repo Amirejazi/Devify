@@ -1,5 +1,9 @@
 /backend-node
-/backend/.idea
+/backend/.idea/
+
+__pycache__/
+*.py[cod]
+*$py.class
 
 # dependencies
 frontend/node_modules
