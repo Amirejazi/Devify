@@ -1,8 +1,16 @@
+import { useEffect, useState } from 'react'
 import CourseBox from '../CourseBox/CourseBox'
 import SectionHeader from '../SectionHeader/SectionHeader'
 import './LastCourses.css'
+import apiRequests from '../../services/Axios/configs'
 
 function LastCourses() {
+    const [courses, setCourses] = useState([])
+
+    useEffect(() => {
+        apiRequests.get('courses')
+        .then(res => setCourses(res.data.result))
+    }, [])
     return (
         <div className="courses">
             <div className="container">
@@ -11,12 +19,9 @@ function LastCourses() {
                 <div className="courses-content">
                     <div className="container">
                         <div className="row">
-                            <CourseBox />
-                            <CourseBox />
-                            <CourseBox />
-                            <CourseBox />
-                            <CourseBox />
-                            <CourseBox />
+                            {courses.splice(0, 6).map(course => (
+                                <CourseBox key={course._id} {...course} />
+                            ))}
                         </div>
                     </div>
                 </div>

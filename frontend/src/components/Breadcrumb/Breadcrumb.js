@@ -11,11 +11,11 @@ function Breadcrumb({ links }) {
                         <i className="fas fa-home breadcrumb__home-icon"></i>
                     </div>
                     <ul className="breadcrumb__list">
-                        {links.map(link => (
+                        {links.map((link, index )=> (
                             <li key={link.id} className="breadcrumb__item">
                                 <Link to={link.to} className="breadcrumb__link">
                                     {link.title}
-                                    {link.id !== links.length && (
+                                    {index < links.length - 1 && (
                                         <i className="fas fa-angle-left breadcrumb__icon"></i>
                                     )}
                                 </Link>

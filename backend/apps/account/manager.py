@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, phone, name, username, email=None, phone_activate_code=None, password=None, is_active=False):
+    def create_user(self, phone, name, username, password, email=None, phone_activate_code=None, is_active=False):
         if not phone:
             raise ValueError("شماره موبایل را وارد کنید!")
 

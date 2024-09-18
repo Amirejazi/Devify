@@ -1,22 +1,23 @@
+import { Link } from 'react-router-dom'
 import './ArticleBox.css'
 
-function ArticleBox({ title, desc, cover }) {
+function ArticleBox({ title, descrption, cover, slug }) {
     return (
         <div className="col-4">
             <div className="article-card">
                 <div className="article-card__header">
-                    <a href="#" className="article-card__link-img">
-                        <img src="images/blog/3.jpg" className="article-card__img" alt="Article Cover" />
-                    </a>
+                    <Link to={`/article-info/${slug}`} className="article-card__link-img">
+                        <img style={{ width: '400px' }} src={`http://localhost:8000${cover}`} className="article-card__img" alt="Article Cover" />
+                    </Link>
                 </div>
                 <div className="article-card__content">
-                    <a href="#" className="article-card__link">
-                        نحوه نصب کتابخانه در پایتون | آموزش نصب کتابخانه پایتون
-                    </a>
+                    <Link to={`/article-info/${slug}`} className="article-card__link">
+                        {title}
+                    </Link>
                     <p className="article-card__text">
-                        زبان پایتون هم مانند دیگر زبان­های برنامه نویسی رایج، دارای کتابخانه های مختلفی برای تسریع...
+                        {descrption}
                     </p>
-                    <a href="#" className="article-card__btn">بیشتر بخوانید</a>
+                    <Link to={`/article-info/${slug}`} className="article-card__btn">بیشتر بخوانید</Link>
                 </div>
             </div>
         </div>

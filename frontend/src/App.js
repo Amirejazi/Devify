@@ -2,7 +2,7 @@ import { useRoutes } from "react-router-dom";
 import routes from './routes'
 import AuthContext from './context/authContext'
 import { useEffect, useState } from "react";
-import apiRequests from "./Services/Axios/configs";
+import apiRequests from "./services/Axios/configs";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -12,9 +12,9 @@ function App() {
     const router = useRoutes(routes)
 
     const login = (userInfos, accessToken, refreshToken) => {
-        setToken(accessToken)
         setIsLoggedIn(true)
         setUserInfos(userInfos)
+        setToken(accessToken)
         localStorage.setItem('authToken', accessToken)
         localStorage.setItem('refreshToken', refreshToken)
     }
@@ -30,7 +30,7 @@ function App() {
         const localStorageData = localStorage.getItem('authToken')
         if (localStorageData) {
             console.log('me');
-            
+
             apiRequests.get('auth/me')
                 .then(res => {
                     setIsLoggedIn(true)

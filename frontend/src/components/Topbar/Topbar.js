@@ -1,33 +1,33 @@
+import { useEffect, useState } from 'react'
 import './Topbar.css'
+import apiRequests from '../../services/Axios/configs'
+import { Link } from 'react-router-dom'
 
 function Topbar() {
+
+    const [allTopbarLinks, setAllTopbarLinks] = useState([])
+
+    useEffect(() => {
+        apiRequests.get('menus/topbar')
+            .then(res => setAllTopbarLinks(res.data))
+    }, [])
+
+    const getRandomItems = (arr, count) => {
+        const shuffled = [...arr].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count)
+    }
+
     return (
         <div className="top-bar">
             <div className="container-fluid">
                 <div className="top-bar__content">
                     <div className="top-bar__right">
                         <ul className="top-bar__menu">
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش Html</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش Css</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش جاوا اسکریپت</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش بوت استرپ</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش پایتون</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">آموزش ری‌اکت</a>
-                            </li>
-                            <li className="top-bar__item">
-                                <a href="#" className="top-bar__link">20,000 تومان</a>
-                            </li>
+                            {getRandomItems(allTopbarLinks, 5).map(link => (
+                                <li key={link.id} className="top-bar__item">
+                                    <Link to={link.slug} className="top-bar__link">{link.name}</Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     <div className="top-bar__left">

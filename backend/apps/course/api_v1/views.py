@@ -1,77 +1,59 @@
-from django.contrib.auth.models import update_last_login
-from rest_framework import status
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegistrationSerializer, LoginSerializer
-
-
-class RegistrationApiView(GenericAPIView):
-    serializer_class = RegistrationSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-            access = refresh.access_token
-            update_last_login(None, user)
-
-            return Response({
-                'detail': 'User registered successfully',
-                'user': {
-                    'name': user.name,
-                    'phone': user.phone,
-                    'username': user.username,
-                    'email': user.email,
-                },
-                'accessToken': str(access),
-                'refreshToken': str(refresh)
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from .pagination import DefaultPagination
+from .serializers import TopbarLinksSerializer, MenusSerializer, CoursesSerializer, CourseInfoSerializer
+from ..models import Course, CourseCategory
 
 
-class LoginApiView(GenericAPIView):
-    serializer_class = LoginSerializer
+class GetTopBarLinksApi(GenericAPIView):
+    serializer_class = TopbarLinksSerializer
 
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
-            refresh = LoginSerializer.get_token(user)
-            access = refresh.access_token
-            update_last_login(None, user)
-
-            return Response({
-                'success': True,
-                'accessToken': str(access),
-                'refreshToken': str(refresh),
-                'user': {
-                    'name': user.name,
-                    'phone': user.phone,
-                    'username': user.username,
-                    'email': user.email,
-                },
-            }, status=status.HTTP_200_OK)
-        return Response({
-            'success': False,
-            'message': serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request):
+        courses = Course.objects.all()
+        serializer = self.serializer_class(courses, many=True)
+        return Response(serializer.data)
 
 
-class GetMeView(APIView):
-    permission_classes = [IsAuthenticated]
+class GetMenusApi(GenericAPIView):
+    serializer_class = MenusSerializer
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        user_data = {
-            "name": user.name,
-            "email": user.email,
-            'phone': user.phone,
-            'username': user.username,
-        }
+    def get(self, request):
+        categories = CourseCategory.objects.all()
+        serializer = self.serializer_class(categories, many=True)
+        return Response(serializer.data)
 
-        return Response(user_data)
+
+class GetCoursesOfCategoryApi(GenericAPIView):
+    serializer_class = CoursesSerializer
+    pagination_class = DefaultPagination
+
+    def get(self, request, category_slug):
+        try:
+            category = CourseCategory.objects.get(slug=category_slug)
+            paginated_courses = self.paginate_queryset(category.courses.filter(is_active=True))
+            serializer = self.serializer_class(paginated_courses, many=True)
+            return self.get_paginated_response(serializer.data)
+        except CourseCategory.DoesNotExist:
+            return Response([])
+
+
+class GetAllCourses(GenericAPIView):
+    serializer_class = CoursesSerializer
+    pagination_class = DefaultPagination
+
+    def get(self, request):
+        courses = Course.objects.filter(is_active=True)
+        paginated_courses = self.paginate_queryset(courses)
+        serializer = self.serializer_class(paginated_courses, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
+class GetCourseInfo(GenericAPIView):
+    serializer_class = CourseInfoSerializer
+
+    def get(self, request, slug):
+        course = get_object_or_404(Course, slug=slug)
+        serializer = self.serializer_class(course)
+        return Response(serializer.data)

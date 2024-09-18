@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import Input from "../../components/Form/Input";
 import { requiredValidator, minValidator, maxValidator, emailValidator } from '../../validators/rules'
 import "./Login.css";
 import useForm from "../../hooks/useForm";
-import apiRequests from "../../Services/Axios/configs";
+import apiRequests from "../../services/Axios/configs";
 import AuthContext from "../../context/authContext";
-import toast from 'react-hot-toast';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { successToast } from "../../services/HotToast/toast";
+import toast from "react-hot-toast";
 
 export default function Login() {
     const [formState, onInputHandler] = useForm({
@@ -23,6 +24,7 @@ export default function Login() {
         }
     }, false)
     const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false)
+    let navigate = useNavigate()
 
     const authContext = useContext(AuthContext)
 
@@ -38,22 +40,9 @@ export default function Login() {
                 if (res.statusText !== 'OK') {
                     throw new Error(res.statusText)
                 }
-                authContext.login(res.data.user, res.data.accessToken, res.data.refreshToken)
-                toast.success('ورود با موفقیت انجام شد :)', {
-                    style: {
-                        borderRadius: '15px',
-                        background: 'linear-gradient(145deg, #88d6f1, #72b4cb)',
-                        color: '#fff',
-                        fontWeight: '600',
-                        zoom: 1.2,
-                        boxShadow: '7px 7px 14px #68a4b9, -7px -7px 14px #96ecff;'
-                    },
-                    iconTheme: {
-                        primary: '#00E676',
-                        secondary: '#fff',
-                    },
-                })
-
+                authContext.login(res.data.user, res.data.accessToken)
+                successToast('ورود با موفقیت انجام شد :)')
+                // navigate('/')
             })
             .catch(err => {
                 console.log(err.data);
@@ -110,7 +99,7 @@ export default function Login() {
                         <br />
                         <div className="login-form__password">
                             <ReCAPTCHA
-                                sitekey='6Lft4y8qAAAAAIfP3O-gzB_n-ka8T8AAj9Oxwk15'
+                                sitekey='6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
                                 onChange={() => setIsRecaptchaVerified(true)}
                             />
                         </div>

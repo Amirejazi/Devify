@@ -1,59 +1,40 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-
 from .pagination import DefaultPagination
-from .serializers import TopbarLinksSerializer, MenusSerializer, CoursesSerializer, CourseInfoSerializer
-from ..models import Course, CourseCategory
+from .serializers import ArticleSerializer, ArticleInfoSerializer
+from ..models import ArticleCategory, Article
 
 
-class GetTopBarLinksApi(GenericAPIView):
-    serializer_class = TopbarLinksSerializer
-
-    def get(self, request):
-        courses = Course.objects.all()
-        serializer = self.serializer_class(courses, many=True)
-        return Response(serializer.data)
-
-
-class GetMenusApi(GenericAPIView):
-    serializer_class = MenusSerializer
-
-    def get(self, request):
-        categories = CourseCategory.objects.all()
-        serializer = self.serializer_class(categories, many=True)
-        return Response(serializer.data)
-
-
-class GetCoursesOfCategoryApi(GenericAPIView):
-    serializer_class = CoursesSerializer
+class GetArticlesOfCategoryApi(GenericAPIView):
+    serializer_class = ArticleSerializer
     pagination_class = DefaultPagination
 
     def get(self, request, category_slug):
         try:
-            category = CourseCategory.objects.get(slug=category_slug)
-            paginated_courses = self.paginate_queryset(category.courses.filter(is_active=True))
-            serializer = self.serializer_class(paginated_courses, many=True)
+            category = ArticleCategory.objects.get(slug=category_slug)
+            paginated_articles = self.paginate_queryset(category.articles.filter(is_active=True))
+            serializer = self.serializer_class(paginated_articles, many=True)
             return self.get_paginated_response(serializer.data)
-        except CourseCategory.DoesNotExist:
+        except ArticleCategory.DoesNotExist:
             return Response([])
 
 
-class GetAllCourses(GenericAPIView):
-    serializer_class = CoursesSerializer
+class GetAllArticles(GenericAPIView):
+    serializer_class = ArticleSerializer
     pagination_class = DefaultPagination
 
     def get(self, request):
-        courses = Course.objects.filter(is_active=True)
-        paginated_courses = self.paginate_queryset(courses)
-        serializer = self.serializer_class(paginated_courses, many=True)
+        articles = Article.objects.filter(is_active=True)
+        paginated_articles = self.paginate_queryset(articles)
+        serializer = self.serializer_class(paginated_articles, many=True)
         return self.get_paginated_response(serializer.data)
 
 
-class GetCourseInfo(GenericAPIView):
-    serializer_class = CourseInfoSerializer
+class ArticleInfoApi(GenericAPIView):
+    serializer_class = ArticleInfoSerializer
 
     def get(self, request, slug):
-        course = get_object_or_404(Course, slug=slug)
-        serializer = self.serializer_class(course)
+        article = get_object_or_404(Article, slug=slug)
+        serializer = self.serializer_class(article)
         return Response(serializer.data)

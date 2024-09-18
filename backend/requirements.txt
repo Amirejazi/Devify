@@ -8,3 +8,7 @@ Pillow==10.4.0
 
 django-admin-decorators==0.1
 jdatetime==5.0.0
+
+#test
+pytest==8.3.2
+pytest-django==4.8.0

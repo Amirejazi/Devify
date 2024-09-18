@@ -97,8 +97,8 @@ apiRequests.interceptors.response.use(
 );
 
 const handleLogout = () => {
-    // localStorage.removeItem("authToken");
-    // localStorage.removeItem("refreshToken");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
     window.location.href = "/login";
 };
 

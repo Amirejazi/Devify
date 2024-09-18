@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './../../components/Header/Header'
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 import Footer from '../../components/Footer/Footer'
 import './ArticleInfo.css'
 import CommentTextArea from '../../components/CommentTextArea/CommentTextArea'
+import { useParams } from 'react-router-dom'
+import apiRequests from '../../services/Axios/configs'
 
 function ArticleInfo() {
+    const [category, setCategory] = useState({})
+    const [creator, setCreator] = useState({})
+    const [articleDetails, setArticleDetails] = useState({})
+
+    const { articleName } = useParams()
+
+    useEffect(() => {
+        apiRequests.get(`articles/${articleName}`)
+            .then(res => {
+                setArticleDetails(res.data)
+                setCategory(res.data.category)
+                setCreator(res.data.creator)
+            })
+    }, [])
+
     return (
         <>
             <Header />
@@ -13,7 +30,7 @@ function ArticleInfo() {
                 links={[
                     { id: 1, title: 'خانه', to: '/' },
                     { id: 2, title: 'مقاله ها', to: '/articles' },
-                    { id: 3, title: 'ویو vs ریکت', to: '/article-info/f' },
+                    { id: 3, title: articleDetails.title, to: `/article-info/${articleDetails.slug}` }
                 ]}
             />
 
@@ -23,27 +40,27 @@ function ArticleInfo() {
                         <div className="col-8">
                             <div className="article">
                                 <h1 className="article__title">
-                                    معرفی بهترین سایت آموزش جاوا اسکریپت [ تجربه محور ] + آموزش رایگان
+                                    {articleDetails.title}
                                 </h1>
                                 <div className="article__header">
                                     <div className="article-header__category article-header__item">
                                         <i className="far fa-folder article-header__icon"></i>
-                                        <a href="#" className="article-header__text">جاوا اسکریپت</a>
+                                        <a href="#" className="article-header__text">{category.title} </a>
                                     </div>
                                     <div className="article-header__category article-header__item">
                                         <i className="far fa-user article-header__icon"></i>
-                                        <span className="article-header__text"> ارسال شده توسط قدیر</span>
+                                        <span className="article-header__text"> ارسال شده توسط {creator.name}</span>
                                     </div>
                                     <div className="article-header__category article-header__item">
                                         <i className="far fa-clock article-header__icon"></i>
-                                        <span className="article-header__text"> ارسال شده توسط قدیر</span>
+                                        <span className="article-header__text"> ارسال شده توسط {creator.name}</span>
                                     </div>
                                     <div className="article-header__category article-header__item">
                                         <i className="far fa-eye article-header__icon"></i>
                                         <span className="article-header__text">  2.14k بازدید</span>
                                     </div>
                                 </div>
-                                <img src="/images/blog/1.jpg" alt="Article Cover" className="article__banner" />
+                                <img src={`http://localhost:8000${articleDetails.cover}`} alt="Article Cover" className="article__banner" />
 
                                 <div className="article__score">
                                     <div className="article__score-icons">
@@ -57,7 +74,7 @@ function ArticleInfo() {
                                 </div>
 
                                 <p className="article__paragraph paragraph">
-                                    جاوا اسکریپت یکی از زبان‌های برنامه‌نویسی اصلی حوزه فرانت‌اند است که به واسطه فریم ورک‌های آن می‌توان انواع وب سایت‌ها، اپلیکیشن‌ها و وب اپلیکیشن‌ها را طراحی کرد. به طور کلی بعد از یادگیری html و css معمولاً باید آموزش جاوا اسکریپت را نیز فرا بگیرید. . چرا که این زبان تکمیل‌کننده html و css بوده و در چنین شرایطی موقعیت‌های شغلی بیشتر را در اختیار خواهید داشت و همچنین می‌توانید پروژه‌های گسترده‌تری را انجام دهید. در حال حاضر با وجود منابع رایگان موجود در وب شما به راحتی می‌توانید زبان جاوا اسکریپت را به صورت حرفه‌ای فرا بگیرید. به همین واسطه در ادامه مطلب قصد داریم سایت‌های شاخص آموزش این زبان برنامه‌نویسی در جهان را به شما معرفی کنیم و در آخر بگوییم که بهترین سایت آموزش جاوا اسکریپت کدام است.
+                                   {articleDetails.body}
                                 </p>
 
                                 <div className="article-read">
@@ -143,7 +160,7 @@ function ArticleInfo() {
                                 </div>
                             </div>
 
-                            <CommentTextArea />
+                            {/* <CommentTextArea /> */}
 
                         </div>
                     </div>

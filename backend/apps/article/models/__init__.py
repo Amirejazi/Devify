@@ -1,3 +1,2 @@
-from .course_category import *
-from .course import *
-from .course_session import *
+from .article_category import *
+from .article import *

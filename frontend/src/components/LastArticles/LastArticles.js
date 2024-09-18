@@ -1,8 +1,19 @@
+import { useEffect, useState } from 'react';
 import ArticleBox from '../ArticleBox/ArticleBox'
 import SectionHeader from '../SectionHeader/SectionHeader'
 import './LastArticles.css'
+import apiRequests from '../../services/Axios/configs';
 
 function LastArticles() {
+    const [articles, setArticles] = useState([]);
+
+    useEffect(() => {
+        apiRequests.get(`articles`)
+            .then((res) => {
+                setArticles(res.data.result);
+            });
+    }, []);
+
     return (
         <section className="articles">
             <div className="container">
@@ -10,21 +21,9 @@ function LastArticles() {
 
                 <div className="articles__content">
                     <div className="row">
-                        <ArticleBox
-                            title='نحوه نصب کتابخانه در پایتون | آموزش نصب کتابخانه پایتون'
-                            desc='زبان پایتون هم مانند دیگر زبان­های برنامه نویسی رایج، دارای کتابخانه های مختلفی برای تسریع'
-                            cover='images/blog3.jpg' 
-                        />
-                        <ArticleBox
-                            title='نحوه نصب کتابخانه در پایتون | آموزش نصب کتابخانه پایتون'
-                            desc='زبان پایتون هم مانند دیگر زبان­های برنامه نویسی رایج، دارای کتابخانه های مختلفی برای تسریع'
-                            cover='images/blog3.jpg' 
-                        />
-                        <ArticleBox
-                            title='نحوه نصب کتابخانه در پایتون | آموزش نصب کتابخانه پایتون'
-                            desc='زبان پایتون هم مانند دیگر زبان­های برنامه نویسی رایج، دارای کتابخانه های مختلفی برای تسریع'
-                            cover='images/blog3.jpg' 
-                        />
+                        {articles.slice(0, 3).map((article) => (
+                            <ArticleBox key={article.id} {...article} />
+                        ))}
                     </div>
                 </div>
             </div>

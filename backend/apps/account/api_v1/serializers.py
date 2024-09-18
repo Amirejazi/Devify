@@ -96,3 +96,10 @@ class LoginSerializer(serializers.Serializer):
     def get_token(cls, user):
         refresh = RefreshToken.for_user(user)
         return refresh
+
+
+class CreatorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'email', 'username', 'phone', 'avatar']

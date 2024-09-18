@@ -6,7 +6,7 @@ import Input from "../../components/Form/Input";
 import useForm from '../../hooks/useForm'
 import { requiredValidator, minValidator, maxValidator, emailValidator } from '../../validators/rules'
 import "./Register.css";
-import apiRequests from "../../Services/Axios/configs";
+import apiRequests from "../../services/Axios/configs";
 import AuthContext from "../../context/authContext";
 
 export default function Register() {

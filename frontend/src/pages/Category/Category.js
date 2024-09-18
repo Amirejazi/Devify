@@ -3,8 +3,32 @@ import Footer from '../../components/Footer/Footer'
 import './Category.css'
 import CourseBox from '../../components/CourseBox/CourseBox'
 import Pagination from '../../components/Pagination/Pagination'
+import { useParams, useSearchParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import apiRequests from '../../services/Axios/configs'
 
 function Category() {
+    const [courses, setCourses] = useState([])
+    const [pagesCount, setPagesCount] = useState(0)
+    const [nextLink, setNextLink] = useState(null)
+    const [previousLink, setPreviousLink] = useState(null)
+
+    const { categoryName } = useParams();
+
+    const [searchParams] = useSearchParams();
+    const page = searchParams.get('page') || 1;
+
+    useEffect(() => {
+        apiRequests.get(`courses/category/${categoryName}?page=${page}`)
+            .then(res => {
+                setCourses(res.data.result)
+                setPagesCount(res.data.pages_count)
+                setNextLink(res.data.links.next)
+                setPreviousLink(res.data.links.previous)
+            })
+            .catch(err => console.log(err))
+    }, [categoryName, page])
+
     return (
         <>
             <Header />
@@ -46,13 +70,25 @@ function Category() {
                     <div className="courses-content">
                         <div className="container">
                             <div className="row">
-                                <CourseBox />
-                                <CourseBox />
-                                <CourseBox />
+                                {courses.length !== 0 ?
+                                    (courses.map(course => (
+                                        <CourseBox key={course._id} {...course} />
+                                    ))) :
+                                    (<div className="alert alert-danger">
+                                        هیچ دوره ای برای این دسته بندی یافت نشد!
+                                    </div>)
+                                }
                             </div>
                         </div>
                     </div>
-                    <Pagination />
+
+                    <Pagination
+                        pagesCount={pagesCount}
+                        currentPage={page}
+                        nextLink={nextLink}
+                        previousLink={previousLink}
+                        pathName={`/category/${categoryName}`}
+                    />
                 </div>
             </section>
             <Footer />

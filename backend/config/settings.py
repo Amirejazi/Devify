@@ -42,6 +42,8 @@ INSTALLED_APPS = [
 
     'apps.account.apps.AccountConfig',
     'apps.main.apps.MainConfig',
+    'apps.course.apps.CourseConfig',
+    'apps.article.apps.ArticleConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,9 +128,9 @@ STATIC_ROOT = BASE_DIR / "static"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "staticfiles",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "staticfiles",
+# ]
 
 AUTH_USER_MODEL = 'account.User'
 
