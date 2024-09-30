@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-app_name = "course-api-v1"
+app_name = "article-api-v1"
 
 urlpatterns = [
     #path('article/category/<slug:category_slug>', views.GetCoursesOfCategoryApi.as_view(), name="courses-of-category"),
