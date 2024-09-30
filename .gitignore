@@ -2,6 +2,7 @@
 /backend/.idea/
 /backend/media/uploads/
 /backend/venv
+/front-end/*
 
 __pycache__/
 *.py[cod]
